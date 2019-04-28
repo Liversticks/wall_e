@@ -1,7 +1,7 @@
 yarl<1.2
 bs4
 psycopg2
-git+https://github.com/Rapptz/discord.py@3f06f247c039a23948e7bb0014ea31db533b4ba2#egg=discord.py[voice]
+discord.py==1.1.0
 psycopg2-binary
 pytz==2018.5
 parsedatetime==2.4

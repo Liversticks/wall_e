@@ -15,6 +15,7 @@ services:  #Services that are needed for the wall_e app
             - POSTGRES_DB_USER
             - POSTGRES_DB_DBNAME
             - POSTGRES_PASSWORD
+            - DELETED_CHANNEL_ID
         volumes: #volume are for hot reload
             - logs:/usr/src/app/logs
         depends_on:   # used to ensure that docker wont start wall_e until after it has started the database container

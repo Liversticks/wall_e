@@ -82,7 +82,9 @@ Pre-requisites: `git`.
          2. If you do not need to setup the DB for your work on the bot: `export ENVIRONMENT='localhost_noDB'`
       1. Run `export TOKEN=token` with the `token` you obtained during the authentication step  
       1. Run `export WOLFRAMAPI='apikey'` with an API key obtained from [here](https://products.wolframalpha.com/api/)  
-         1. You can also do `export WOLFRAMAPI='dev'` if you dont want to open a WolframAlpha account [this doesnt work if you need to do work that involves the `.wolfram` command]  
+         1. You can also do `export WOLFRAMAPI='dev'` if you dont want to open a WolframAlpha account [this doesnt work if you need to do work that involves the `.wolfram` command]
+      1. Run `export DELETED_CHANNEL_ID=channel_ID` with the `channel_ID` of the channel you wish deleted messages will be logged to
+         1. To obtain a `channel_ID`, open Discord, right-click the channel you want, and click `Copy ID`
       1. Run `export POSTGRES_DB_USER='<admin user of your local postgres instance>'`
       1. Run `export POSTGRES_DB_DBNAME='<default database of the admin user on your local postgres instance>'`
       1. Run `export POSTGRES_PASSWORD='<password for the admin user on your local postgres instance>'`

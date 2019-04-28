@@ -2,6 +2,7 @@ from discord.ext import commands
 import discord
 import asyncio
 import json
+import datetime
 from helper_files.embed import embed as em
 import helper_files.settings as settings
 
@@ -81,6 +82,24 @@ class Mod():
         eObj = await em(ctx, title='ATTENTION:', colour=0xff0000, author=ctx.author.display_name, avatar=ctx.author.avatar_url, description=msg, footer='Moderator Warning')
         if eObj is not False:
             await ctx.send(embed=eObj)
+    
+    async def on_raw_message_delete(self, payload):
+        logger.info('[Mod on_raw_message_delete()] message deletion detected.')
+        channel = self.bot.get_channel(settings.deleted_channel_id)
+        time_deleted = str(datetime.datetime.now())
+        deleted_message = payload.cached_message
+        if deleted_message == None:
+            embed = discord.Embed(title="Message Deleted", description=time_deleted, color=0x000000)
+            embed.add_field(name="Author", value="Not Cached", inline=False)
+            embed.add_field(name="Channel", value=self.bot.get_channel(payload.channel_id), inline=False)
+            embed.add_field(name="Content", value="Not Cached", inline=False)
+            await channel.send(embed=embed)
+        else:
+            embed = discord.Embed(title="Message Deleted", description=time_deleted, color=0x000000)
+            embed.add_field(name="Author", value=deleted_message.author, inline=False)
+            embed.add_field(name="Channel", value=deleted_message.channel, inline=False)
+            embed.add_field(name="Content", value=deleted_message.content, inline=False)
+            await channel.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Mod(bot))

@@ -34,6 +34,13 @@ wolframAPI = os.environ['WOLFRAMAPI']
 os.environ['WOLFRAMAPI']=''
 print("[settings.py] variable \"WOLFRAMAPI\" has been set")
 
+if 'DELETED_CHANNEL_ID' not in os.environ:
+	print("[settings.py] No environment variable \"DELETED_CHANNEL_ID\" seems to exist...read the README again")
+	exit(1)
+deleted_channel_id = os.environ['DELETED_CHANNEL_ID']
+os.environ['DELETED_CHANNEL_ID']=''
+print("[settings.py] variable \"DELETED_CHANNEL_ID\" has been set")
+
 if ENVIRONMENT != 'localhost_noDB':
 	
 	if 'POSTGRES_DB_USER' not in os.environ:

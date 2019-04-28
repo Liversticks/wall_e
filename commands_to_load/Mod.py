@@ -84,8 +84,11 @@ class Mod():
             await ctx.send(embed=eObj)
     
     async def on_raw_message_delete(self, payload):
+        await self.bot.wait_until_ready()
         logger.info('[Mod on_raw_message_delete()] message deletion detected.')
-        channel = self.bot.get_channel(settings.deleted_channel_id)
+        channel = None
+        while channel is None:
+            channel = self.bot.get_channel(int(settings.deleted_channel_id))
         time_deleted = str(datetime.datetime.now())
         try:
             deleted_message = payload.cached_message

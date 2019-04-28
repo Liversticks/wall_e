@@ -87,8 +87,9 @@ class Mod():
         logger.info('[Mod on_raw_message_delete()] message deletion detected.')
         channel = self.bot.get_channel(settings.deleted_channel_id)
         time_deleted = str(datetime.datetime.now())
-        deleted_message = payload.cached_message
-        if deleted_message == None:
+        try:
+            deleted_message = payload.cached_message
+        except AttributeError:
             embed = discord.Embed(title="Message Deleted", description=time_deleted, color=0x000000)
             embed.add_field(name="Author", value="Not Cached", inline=False)
             embed.add_field(name="Channel", value=self.bot.get_channel(payload.channel_id), inline=False)

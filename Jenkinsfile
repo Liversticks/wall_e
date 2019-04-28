@@ -25,11 +25,14 @@ pipeline {
 
                         String walleDbPassword='WALL_E_DB_PASSWORD'
 
+                        String deletedChannelID='DELETED_CHANNEL_ID'
+
                         withCredentials([
                                 string(credentialsId: 'TEST_BOT_USER_TOKEN', variable: "${tokenEnv}"),
                                 string(credentialsId: 'WOLFRAMAPI', variable: "${wolframEnv}"),
                                 string(credentialsId: 'POSTGRES_PASSWORD', variable: "${postgresDbPassword}"),
                                 string(credentialsId: 'WALL_E_DB_PASSWORD', variable: "${walleDbPassword}"),
+                                string(credentialsId: 'TEST_DELETED_CHANNEL_ID', variable: "${deletedChannelID}"),
 
                         ]) {
                             sh "docker rm -f ${testContainerName} ${testContainerDBName} || true"
@@ -101,7 +104,7 @@ pipeline {
                         ]) {
                             sh "docker rm -f ${productionContainerName} || true"
                             sh "docker image rm -f ${productionContainerName.toLowerCase()} || true"
-                            sh "docker volume create --name=\"${COMPOSE_PROJECT_NAME}_logs\""                                    
+                            sh "docker volume create --name=\"${COMPOSE_PROJECT_NAME}_logs\""
                             sh "docker-compose up -d"
                         }
                         sleep 20
@@ -126,7 +129,7 @@ pipeline {
                                 discordSend description: BRANCH_NAME + '\n' + output, footer: env.GIT_COMMIT, link: env.BUILD_URL, successful: false, title: 'Failing build', webhookURL: "$WEBHOOKURL"
                             }
                             error output
-                        }                                            
+                        }
                     }
                 }
             }

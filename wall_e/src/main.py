@@ -1,6 +1,5 @@
-from discord.ext import commands
+from discord.ext import tasks, commands
 import discord
-import asyncio
 import importlib
 import os
 import inspect
@@ -93,21 +92,19 @@ async def on_member_join(member):
 # Timer cycle: Every minute
 # For each cycle:
 # Asymptomatic -> Infected at 0.5 chance = Mean Incubation Period is 2 cycles
+@tasks.loop(seconds=60)
 async def incubation_cycle():
-    await bot.wait_until_ready()
-    while not bot.is_closed:
-        asymp_role = discord.utils.get(bot.guilds[0].roles, name='Asymptomatic')
-        if asymp_role is None:
-            asymp_role = await bot.guilds[0].create_role(name='Asymptomatic')
-        infec_role = discord.utils.get(bot.guilds[0].roles, name='Infected')
-        if infec_role is None:
-            infec_role = await bot.guilds[0].create_role(name='Infected', colour=discord.Colour(1))
-        asymp_members = asymp_role.members
-        for asymp_member in asymp_members:
-            if random.random() < 0.5:
-                await asymp_member.remove_roles(asymp_role)
-                await asymp_member.add_roles(infec_role)
-        await asyncio.sleep(60)
+    asymp_role = discord.utils.get(bot.guilds[0].roles, name='Asymptomatic')
+    if asymp_role is None:
+        asymp_role = await bot.guilds[0].create_role(name='Asymptomatic')
+    infec_role = discord.utils.get(bot.guilds[0].roles, name='Infected')
+    if infec_role is None:
+        infec_role = await bot.guilds[0].create_role(name='Infected', colour=discord.Colour(1))
+    asymp_members = asymp_role.members
+    for asymp_member in asymp_members:
+        if random.random() < 0.5:
+            await asymp_member.remove_roles(asymp_role)
+            await asymp_member.add_roles(infec_role)
 
 
 # Transmission trigger
@@ -181,7 +178,5 @@ if __name__ == "__main__":
         except Exception as e:
             exception = '{}: {}'.format(type(e).__name__, e)
             logger.error('[main.py] Failed to load command {}\n{}'.format(cog, exception))
-    # April Fools 2020: Add virus incubation cycle
-    bot.loop.create_task(incubation_cycle())
     # final step, running the bot with the passed in environment TOKEN variable
     bot.run(WallEConfig.get_config_value("basic_config", "TOKEN"))

@@ -113,8 +113,8 @@ async def virus_trigger(message):
                         await susce_member.add_roles(asymp_role)
             if asymp_role in sick_member.roles:
                 if random.random() < 0.25:
-                    await asymp_member.remove_roles(asymp_role)
-                    await asymp_member.add_roles(infec_role)
+                    await sick_member.remove_roles(asymp_role)
+                    await sick_member.add_roles(infec_role)
 
 
 ####################

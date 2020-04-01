@@ -1,5 +1,6 @@
 from discord.ext import commands
 import discord
+import asyncio
 import importlib
 import os
 import inspect
@@ -83,10 +84,11 @@ async def on_member_join(member):
             await member.send(embed=e_obj)
             logger.info("[main.py on_member_join] embed sent to member {}".format(member))
 
+
 # April Fools 2020 - A Mysterious Virus has Appeared!
 # Two new roles: Asymptomatic (no colour) and Infected (Black)
 # How to use: Give someone talkative the Asymptomatic role
-
+#
 # Incubation cycle
 # Timer cycle: Every minute
 # For each cycle:
@@ -114,8 +116,8 @@ async def incubation_cycle():
 # Each (Susceptible) -> Asymptomatic at 0.5 chance = Mean Single Event Reproduction is 2
 # For each post by an Infected:
 # Each (Susceptible) -> Asymptomatic at 0.75 chance = Mean Single Event Reproduction is 3
-@bot.listen()
-async def on_message(message):
+@bot.listen('on_message')
+async def transmission_trigger(message):
     asymp_role = discord.utils.get(bot.guilds[0].roles, name='Asymptomatic')
     if asymp_role is None:
         asymp_role = await bot.guilds[0].create_role(name='Asymptomatic')

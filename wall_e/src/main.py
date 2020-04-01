@@ -122,21 +122,22 @@ async def before_incubation_cycle():
 # Each (Susceptible) -> Asymptomatic at 0.75 chance = Mean Single Event Reproduction is 3
 @bot.listen('on_message')
 async def transmission_trigger(message):
-    asymp_role = discord.utils.get(bot.guilds[0].roles, name='Asymptomatic')
-    if asymp_role is None:
-        asymp_role = await bot.guilds[0].create_role(name='Asymptomatic')
-    infec_role = discord.utils.get(bot.guilds[0].roles, name='Infected')
-    if infec_role is None:
-        infec_role = await bot.guilds[0].create_role(name='Infected', colour=discord.Colour(1))
     sick_member = message.author
-    if asymp_role in sick_member.roles or infec_role in sick_member.roles:
-        p = 0.5 if asymp_role in sick_member.roles else 0.75
-        susce_channel = message.channel
-        async for susce_message in susce_channel.history(limit=4, before=message):
-            susce_member = susce_message.author
-            if asymp_role not in susce_member.roles and infec_role not in susce_member.roles:
-                if random.random() < p:
-                    await susce_member.add_roles(asymp_role)
+    if isinstance(sick_member, discord.Member):
+        asymp_role = discord.utils.get(bot.guilds[0].roles, name='Asymptomatic')
+        if asymp_role is None:
+            asymp_role = await bot.guilds[0].create_role(name='Asymptomatic')
+        infec_role = discord.utils.get(bot.guilds[0].roles, name='Infected')
+        if infec_role is None:
+            infec_role = await bot.guilds[0].create_role(name='Infected', colour=discord.Colour(1))
+        if asymp_role in sick_member.roles or infec_role in sick_member.roles:
+            p = 0.5 if asymp_role in sick_member.roles else 0.75
+            susce_channel = message.channel
+            async for susce_message in susce_channel.history(limit=4, before=message):
+                susce_member = susce_message.author
+                if asymp_role not in susce_member.roles and infec_role not in susce_member.roles:
+                    if random.random() < p:
+                        await susce_member.add_roles(asymp_role)
 
 
 ####################

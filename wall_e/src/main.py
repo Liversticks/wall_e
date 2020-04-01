@@ -108,6 +108,12 @@ async def incubation_cycle():
             await asymp_member.add_roles(infec_role)
 
 
+@incubation_cycle.before_loop
+async def before_incubation_cycle():
+    logger.info("[main.py before_incubation_cycle] wait for ready")
+    await bot.wait_until_ready()
+
+
 # Transmission trigger
 # (Susceptible) = authors of the previous 4 channel messages and neither Asymptomatic nor Infected
 # For each post by an Asymptomatic:

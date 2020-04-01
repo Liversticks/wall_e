@@ -1,4 +1,4 @@
-from discord.ext import tasks, commands
+from discord.ext import commands
 import discord
 import importlib
 import os
@@ -87,41 +87,14 @@ async def on_member_join(member):
 # April Fools 2020 - A Mysterious Virus has Appeared!
 # Two new roles: Asymptomatic (no colour) and Infected (Black)
 # How to use: Give someone talkative the Asymptomatic role
-#
-# Incubation cycle
-# Timer cycle: Every minute
-# For each cycle:
-# Asymptomatic -> Infected at 0.5 chance = Mean Incubation Period is 2 cycles
-@tasks.loop(seconds=60)
-async def incubation_cycle():
-    asymp_role = discord.utils.get(bot.guilds[0].roles, name='Asymptomatic')
-    if asymp_role is None:
-        asymp_role = await bot.guilds[0].create_role(name='Asymptomatic')
-    infec_role = discord.utils.get(bot.guilds[0].roles, name='Infected')
-    if infec_role is None:
-        infec_role = await bot.guilds[0].create_role(name='Infected', colour=discord.Colour(1))
-    asymp_members = asymp_role.members
-    logger.info("[main.py incubation_cycle] asymptomatic {}".format(len(asymp_members)))
-    for asymp_member in asymp_members:
-        if random.random() < 0.5:
-            await asymp_member.remove_roles(asymp_role)
-            await asymp_member.add_roles(infec_role)
-
-
-@incubation_cycle.before_loop
-async def before_incubation_cycle():
-    logger.info("[main.py before_incubation_cycle] wait for ready")
-    await bot.wait_until_ready()
-
-
-# Transmission trigger
 # (Susceptible) = authors of the previous 4 channel messages and neither Asymptomatic nor Infected
 # For each post by an Asymptomatic:
 # Each (Susceptible) -> Asymptomatic at 0.5 chance = Mean Single Event Reproduction is 2
+# The Asymptomatic -> Infected at 0.25 chance = Mean Incubation Period is 4 messages
 # For each post by an Infected:
 # Each (Susceptible) -> Asymptomatic at 0.75 chance = Mean Single Event Reproduction is 3
 @bot.listen('on_message')
-async def transmission_trigger(message):
+async def virus_trigger(message):
     sick_member = message.author
     if isinstance(sick_member, discord.Member):
         asymp_role = discord.utils.get(bot.guilds[0].roles, name='Asymptomatic')
@@ -138,6 +111,10 @@ async def transmission_trigger(message):
                 if asymp_role not in susce_member.roles and infec_role not in susce_member.roles:
                     if random.random() < p:
                         await susce_member.add_roles(asymp_role)
+            if asymp_role in sick_member.roles:
+                if random.random() < 0.25:
+                    await asymp_member.remove_roles(asymp_role)
+                    await asymp_member.add_roles(infec_role)
 
 
 ####################

@@ -92,7 +92,7 @@ async def on_member_join(member):
 # Incubation cycle
 # Timer cycle: Every minute
 # For each cycle:
-# Asymptomatic -> Infected at 0.01 chance = Mean Incubation Period is 100 cycles
+# Asymptomatic -> Infected at 0.5 chance = Mean Incubation Period is 2 cycles
 async def incubation_cycle():
     await bot.wait_until_ready()
     while not bot.is_closed:
@@ -104,7 +104,7 @@ async def incubation_cycle():
             infec_role = await bot.guilds[0].create_role(name='Infected', colour=discord.Colour(1))
         asymp_members = asymp_role.members
         for asymp_member in asymp_members:
-            if random.random() < 0.01:
+            if random.random() < 0.5:
                 await asymp_member.remove_roles(asymp_role)
                 await asymp_member.add_roles(infec_role)
         await asyncio.sleep(60)

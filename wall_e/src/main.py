@@ -101,6 +101,7 @@ async def incubation_cycle():
     if infec_role is None:
         infec_role = await bot.guilds[0].create_role(name='Infected', colour=discord.Colour(1))
     asymp_members = asymp_role.members
+    logger.info("[main.py incubation_cycle] asymptomatic {}".format(len(asymp_members)))
     for asymp_member in asymp_members:
         if random.random() < 0.5:
             await asymp_member.remove_roles(asymp_role)
